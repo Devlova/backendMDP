@@ -12,6 +12,9 @@ module.exports = function(app) {
     app.route('/users/:user_id')
         .get(todoList.findUsers);
 
+    app.route('/search')
+        .get(todoList.searchUsers);
+
     app.route('/users')
         .post(todoList.createUsers);
 
@@ -20,4 +23,7 @@ module.exports = function(app) {
     
     app.route('/users')
         .delete(todoList.deleteUsers);
+    
+    app.route('/find/:user_id')
+        .get(todoList.findUsersx);
 };

@@ -28,6 +28,21 @@ exports.findUsers = function(req, res) {
     });
 };
 
+exports.searchUsers = function(req, res) {
+    
+    var user_id = req.query.user_id;
+    //console.log(`nama : ${user_id}`)
+    connection.query('SELECT first_name FROM person where id = ?',
+    [ user_id ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
 exports.createUsers = function(req, res) {
     
     var first_name = req.body.first_name;
@@ -78,4 +93,37 @@ exports.deleteUsers = function(req, res) {
 
 exports.index = function(req, res) {
     response.ok("Hello from the Node JS RESTful side!", res)
+};
+
+
+
+exports.findUsersx = async function(req, res) {
+
+    function findContact(id){
+        return new Promise(resolve => {
+            var query = 'SELECT * FROM contact where user_id = ?';
+            connection.query(query,[ id ], function (error, rows, fields){
+                if(error){
+                    console.log(error)
+                } else{
+                    resolve(rows); //Kembalian berupa kontak data
+                }
+            });
+        });
+    }
+
+    var user_id = req.params.user_id;
+
+    let logs = await findContact(user_id);
+    console.log(logs);
+
+    var query = 'SELECT * FROM person where id = ?';
+    connection.query(query, [ user_id ], function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            connection.end()        
+            return response.ok({rows,logs}, res)
+        }
+    });
 };
